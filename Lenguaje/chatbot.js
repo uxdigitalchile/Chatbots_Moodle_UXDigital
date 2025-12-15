@@ -1,6 +1,6 @@
 /**
  * ============================================
- * CHATBOT DE LENGUAJE - CONFIGURACIÓN
+ * CHATBOT DE LENGUAJE - CONFIGURACIÓN CORREGIDA
  * ============================================
  */
 
@@ -9,8 +9,8 @@ const CONFIG = {
   courseName: 'Lenguaje y Comunicación',
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat',
   
-  // CAMBIAR AQUÍ EL GIF:
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
+  // ✅ ACTUALIZADO: URL del nuevo GIF transparente
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
   
   colors: {
     primary: '#FF8C00',      // Naranja oscuro
@@ -29,7 +29,7 @@ const CONFIG = {
 
 /**
  * ============================================
- * CÓDIGO DEL CHATBOT (NO MODIFICAR)
+ * CÓDIGO DEL CHATBOT
  * ============================================
  */
 
@@ -103,20 +103,25 @@ const CONFIG = {
       }
     `;
     
-    // IMPORTANTE: Padding original que hacía funcionar el GIF
+    // ✅ CORRECCIÓN DE CSS PARA FONDO TRANSPARENTE
     if (CONFIG.avatarUrl) {
       cssRules += `
       #n8n-chat .chat-window-toggle {
-        background-image: url('${CONFIG.avatarUrl}') !important;
-        background-size: cover !important;
-        background-position: center !important;
+        background: url('${CONFIG.avatarUrl}') no-repeat center center !important;
+        background-size: contain !important;
         background-color: transparent !important;
-        padding: 100px 50px 70px 100px !important;
-        width: 150px !important;
-        height: 150px !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 130px !important;
+        height: 130px !important;
+        padding: 0 !important;
       }
       #n8n-chat .chat-window-toggle svg {
         display: none !important;
+      }
+      #n8n-chat .chat-window-toggle:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
       }
       `;
     }
