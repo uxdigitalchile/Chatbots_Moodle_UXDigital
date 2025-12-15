@@ -1,14 +1,40 @@
 /**
- * Chatbot de Lenguaje - Curso ID 4
- * UXDigital Chile
- * Versión FINAL - Avatar transparente como producción
+ * ============================================
+ * CHATBOT DE LENGUAJE - CONFIGURACIÓN
+ * ============================================
+ */
+
+const CONFIG = {
+  courseId: 4,
+  courseName: 'Lenguaje y Comunicación',
+  webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat',
+  
+  // CAMBIAR AQUÍ EL GIF:
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
+  
+  colors: {
+    primary: '#FF8C00',      // Naranja oscuro
+    secondary: '#FFA500'     // Naranja
+  },
+  
+  emoji: '📖',
+  
+  messages: {
+    greeting: '¡Hola {nombre}! 📚 Soy tu tutor de Lenguaje. ¿Estás listo para leer algo interesante hoy o prefieres que repasemos ortografía?',
+    greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
+    subtitle: 'Soy tu Tutor de Lenguaje y Comunicación',
+    placeholder: '¿En qué puedo ayudarte?'
+  }
+};
+
+/**
+ * ============================================
+ * CÓDIGO DEL CHATBOT (NO MODIFICAR)
+ * ============================================
  */
 
 (function() {
   'use strict';
-  
-  const COURSE_ID = 4;
-  const WEBHOOK_URL = 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat';
   
   function isInCourse(courseId) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -35,7 +61,7 @@
     };
   }
   
-  if (!isInCourse(COURSE_ID)) return;
+  if (!isInCourse(CONFIG.courseId)) return;
   
   setTimeout(() => {
     const userInfo = getUserInfo();
@@ -50,32 +76,51 @@
       document.head.appendChild(link);
     }
     
-    // Solo estilos para header y mensajes, NO para el botón
     const style = document.createElement('style');
-    style.textContent = `
+    let cssRules = `
       #n8n-chat .chat-header {
-        background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%) !important;
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
       }
       #n8n-chat .chat-message-user {
-        background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%) !important;
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
         color: #ffffff !important;
       }
       #n8n-chat .chat-message-bot {
         background: #fff8f0 !important;
       }
       #n8n-chat .chat-input:focus {
-        border-color: #FF8C00 !important;
+        border-color: ${CONFIG.colors.primary} !important;
       }
       #n8n-chat .chat-input-send-button {
-        background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%) !important;
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
       }
     `;
+    
+    if (CONFIG.avatarUrl) {
+      cssRules += `
+      #n8n-chat .chat-window-toggle {
+        background-image: url('${CONFIG.avatarUrl}') !important;
+        background-size: cover !important;
+        background-position: center !important;
+      }
+      `;
+    }
+    
+    style.textContent = cssRules;
     document.head.appendChild(style);
     
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
       .then(({ createChat }) => {
+        const greeting = userInfo.firstName !== 'Estudiante' 
+          ? CONFIG.messages.greeting.replace('{nombre}', userInfo.firstName)
+          : CONFIG.messages.greetingAnonymous;
+        
+        const title = userInfo.firstName !== 'Estudiante'
+          ? `¡Hola ${userInfo.firstName}! ${CONFIG.emoji}`
+          : `¡Hola! ${CONFIG.emoji}`;
+        
         createChat({
-          webhookUrl: WEBHOOK_URL,
+          webhookUrl: CONFIG.webhookUrl,
           target: '#n8n-chat',
           mode: 'window',
           chatInputKey: 'chatInput',
@@ -84,24 +129,20 @@
           metadata: {},
           showWelcomeScreen: false,
           defaultLanguage: 'es',
-          initialMessages: [
-            userInfo.firstName !== 'Estudiante' 
-              ? `¡Hola ${userInfo.firstName}! 📚 Soy tu tutor de Lenguaje. ¿Estás listo para leer algo interesante hoy o prefieres que repasemos ortografía?`
-              : '¿Cómo puedo ayudarte hoy?'
-          ],
+          initialMessages: [greeting],
           i18n: {
             es: {
-              title: userInfo.firstName !== 'Estudiante' 
-                ? `¡Hola ${userInfo.firstName}! 📖`
-                : '¡Hola! 📖',
-              subtitle: 'Soy tu Tutor de Lenguaje y Comunicación',
+              title: title,
+              subtitle: CONFIG.messages.subtitle,
               footer: '',
               getStarted: 'Nueva conversación',
-              inputPlaceholder: '¿En qué puedo ayudarte?',
+              inputPlaceholder: CONFIG.messages.placeholder,
             },
           },
           enableStreaming: false,
         });
+        
+        console.log(`✅ Chatbot cargado: ${CONFIG.courseName}`);
       });
   }, 800);
 })();
