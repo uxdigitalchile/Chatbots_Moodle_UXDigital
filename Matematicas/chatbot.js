@@ -1,7 +1,7 @@
 /**
  * Chatbot de Matemáticas - Curso ID 6
  * UXDigital Chile
- * Última actualización: 2025-01-13 v1.2
+ * Última actualización: 2025-01-13 v1.3
  */
 
 (function() {
@@ -15,7 +15,6 @@
     secondary: '#1E90FF'
   };
   
-  // Verificar si estamos en el curso correcto
   function isInCourse(courseId) {
     const urlParams = new URLSearchParams(window.location.search);
     const currentCourseId = parseInt(urlParams.get('id')) || 0;
@@ -33,7 +32,6 @@
            bodyCourseId === courseId;
   }
   
-  // Detectar información del usuario
   function getUserInfo() {
     let userName = '';
     let userId = '';
@@ -60,16 +58,13 @@
     };
   }
   
-  // Cargar chatbot
   function loadChatbot() {
     const userInfo = getUserInfo();
     
-    // Crear contenedor
     const container = document.createElement('div');
     container.id = 'n8n-chat-matematicas';
     document.body.appendChild(container);
     
-    // Cargar CSS
     if (!document.querySelector('link[href*="n8n/chat"]')) {
       const link = document.createElement('link');
       link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
@@ -77,35 +72,41 @@
       document.head.appendChild(link);
     }
     
-    // Estilos personalizados
     const style = document.createElement('style');
     style.textContent = `
-      /* Botón flotante transparente - solo ícono */
+      /* Botón flotante: solo emoji, sin fondo */
       #n8n-chat-matematicas .chat-window-toggle {
         background: transparent !important;
         background-color: transparent !important;
         background-image: none !important;
         border: none !important;
-        box-shadow: none !important;
-        width: 60px !important;
-        height: 60px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        width: 70px !important;
+        height: 70px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 40px !important;
         padding: 0 !important;
       }
       
+      #n8n-chat-matematicas .chat-window-toggle::before {
+        content: "🧮" !important;
+        display: block !important;
+        line-height: 1 !important;
+      }
+      
+      #n8n-chat-matematicas .chat-window-toggle svg,
+      #n8n-chat-matematicas .chat-window-toggle img {
+        display: none !important;
+      }
+      
       #n8n-chat-matematicas .chat-window-toggle:hover {
-        background: transparent !important;
         transform: scale(1.1) !important;
         transition: transform 0.2s ease !important;
       }
       
-      #n8n-chat-matematicas .chat-window-toggle svg {
-        width: 60px !important;
-        height: 60px !important;
-        color: ${COLORS.primary} !important;
-        filter: drop-shadow(0 2px 8px rgba(0, 71, 171, 0.3)) !important;
-      }
-      
-      /* Input del chat */
       #n8n-chat-matematicas .chat-input {
         border: 2px solid #e0e0e0 !important;
         border-radius: 24px !important;
@@ -117,18 +118,15 @@
         box-shadow: 0 4px 16px rgba(0, 71, 171, 0.3) !important;
       }
       
-      /* Botón de enviar */
       #n8n-chat-matematicas .chat-input-send-button {
         background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
         border-radius: 50% !important;
       }
       
-      /* Header */
       #n8n-chat-matematicas .chat-header {
         background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
       }
       
-      /* Mensajes del usuario */
       #n8n-chat-matematicas .chat-message-user {
         background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
         color: #ffffff !important;
@@ -136,7 +134,6 @@
     `;
     document.head.appendChild(style);
     
-    // Inicializar
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
       .then(({ createChat }) => {
         createChat({
@@ -164,7 +161,6 @@
       });
   }
   
-  // Ejecutar si estamos en el curso correcto
   if (isInCourse(COURSE_ID)) {
     console.log(`✅ Curso detectado: ${COURSE_NAME} (ID ${COURSE_ID})`);
     if (document.readyState === 'loading') {
