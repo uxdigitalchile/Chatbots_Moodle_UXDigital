@@ -10,7 +10,7 @@ const CONFIG = {
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat',
   
   // CAMBIAR AQUÍ EL GIF:
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
   
   colors: {
     primary: '#FF8C00',      // Naranja oscuro
@@ -96,6 +96,8 @@ const CONFIG = {
       }
     `;
     
+    // Si hay avatar, NO agregamos estilos al botón (dejamos que sea transparente por defecto)
+    // Solo agregamos la imagen de fondo
     if (CONFIG.avatarUrl) {
       cssRules += `
       #n8n-chat .chat-window-toggle {
