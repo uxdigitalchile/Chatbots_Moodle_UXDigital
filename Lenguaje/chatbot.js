@@ -10,7 +10,7 @@ const CONFIG = {
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat',
   
   // CAMBIAR AQUÍ EL GIF:
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
   
   colors: {
     primary: '#FF8C00',      // Naranja oscuro
@@ -80,30 +80,43 @@ const CONFIG = {
     let cssRules = `
       #n8n-chat .chat-header {
         background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
+        padding: 20px !important;
+        border-radius: 20px 20px 0 0 !important;
       }
       #n8n-chat .chat-message-user {
         background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
         color: #ffffff !important;
+        border-radius: 18px 18px 4px 18px !important;
+        padding: 12px 16px !important;
       }
       #n8n-chat .chat-message-bot {
         background: #fff8f0 !important;
+        border-radius: 18px 18px 18px 4px !important;
+        padding: 12px 16px !important;
       }
       #n8n-chat .chat-input:focus {
         border-color: ${CONFIG.colors.primary} !important;
+        box-shadow: 0 4px 16px rgba(255, 140, 0, 0.3) !important;
       }
       #n8n-chat .chat-input-send-button {
         background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
       }
     `;
     
-    // Si hay avatar, NO agregamos estilos al botón (dejamos que sea transparente por defecto)
-    // Solo agregamos la imagen de fondo
+    // IMPORTANTE: Padding original que hacía funcionar el GIF
     if (CONFIG.avatarUrl) {
       cssRules += `
       #n8n-chat .chat-window-toggle {
         background-image: url('${CONFIG.avatarUrl}') !important;
         background-size: cover !important;
         background-position: center !important;
+        background-color: transparent !important;
+        padding: 100px 50px 70px 100px !important;
+        width: 150px !important;
+        height: 150px !important;
+      }
+      #n8n-chat .chat-window-toggle svg {
+        display: none !important;
       }
       `;
     }
