@@ -1,7 +1,7 @@
 /**
  * Chatbot de Lenguaje y Comunicación - Curso ID 4
  * UXDigital Chile
- * Última actualización: 2025-01-13
+ * Última actualización: 2025-01-13 v1.2
  */
 
 (function() {
@@ -80,33 +80,61 @@
     // Estilos personalizados
     const style = document.createElement('style');
     style.textContent = `
+      /* Botón flotante transparente - solo ícono */
       #n8n-chat-lenguaje .chat-window-toggle {
-        background-image: url('https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif') !important;
-        background-size: cover !important;
-        width: 150px !important;
-        height: 150px !important;
+        background: transparent !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 60px !important;
+        height: 60px !important;
+        padding: 0 !important;
       }
-      #n8n-chat-lenguaje .chat-window-toggle svg { display: none !important; }
+      
+      #n8n-chat-lenguaje .chat-window-toggle:hover {
+        background: transparent !important;
+        transform: scale(1.1) !important;
+        transition: transform 0.2s ease !important;
+      }
+      
+      #n8n-chat-lenguaje .chat-window-toggle svg {
+        width: 60px !important;
+        height: 60px !important;
+        color: ${COLORS.primary} !important;
+        filter: drop-shadow(0 2px 8px rgba(255, 140, 0, 0.3)) !important;
+      }
+      
+      /* Input del chat */
       #n8n-chat-lenguaje .chat-input {
         border: 2px solid #ffe0b3 !important;
         border-radius: 24px !important;
         padding: 14px 20px !important;
       }
+      
       #n8n-chat-lenguaje .chat-input:focus {
         border-color: ${COLORS.primary} !important;
         box-shadow: 0 4px 16px rgba(255, 140, 0, 0.3) !important;
       }
+      
+      /* Botón de enviar */
       #n8n-chat-lenguaje .chat-input-send-button {
         background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
         border-radius: 50% !important;
       }
+      
+      /* Header */
       #n8n-chat-lenguaje .chat-header {
         background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
       }
+      
+      /* Mensajes del usuario */
       #n8n-chat-lenguaje .chat-message-user {
         background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
         color: #ffffff !important;
       }
+      
+      /* Mensajes del bot */
       #n8n-chat-lenguaje .chat-message-bot {
         background: #fff8f0 !important;
       }
