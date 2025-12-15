@@ -1,6 +1,6 @@
 /**
  * ============================================
- * CHATBOT DE MATEMÁTICAS - CONFIGURACIÓN
+ * CHATBOT DE MATEMÁTICAS - CONFIGURACIÓN CORREGIDA
  * ============================================
  */
 
@@ -9,8 +9,8 @@ const CONFIG = {
   courseName: 'Fracciones Matemáticas',
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat',
   
-  // CAMBIAR AQUÍ EL GIF:
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
+  // ✅ ACTUALIZADO: URL del nuevo GIF transparente
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
   
   colors: {
     primary: '#0047AB',      // Azul Rey
@@ -29,7 +29,7 @@ const CONFIG = {
 
 /**
  * ============================================
- * CÓDIGO DEL CHATBOT (NO MODIFICAR)
+ * CÓDIGO DEL CHATBOT
  * ============================================
  */
 
@@ -98,20 +98,26 @@ const CONFIG = {
       }
     `;
     
-    // IMPORTANTE: Padding original que hacía funcionar el GIF
+    // ✅ CORRECCIÓN DE CSS PARA FONDO TRANSPARENTE
     if (CONFIG.avatarUrl) {
       cssRules += `
       #n8n-chat .chat-window-toggle {
-        background-image: url('${CONFIG.avatarUrl}') !important;
-        background-size: cover !important;
-        background-position: center !important;
+        background: url('${CONFIG.avatarUrl}') no-repeat center center !important;
+        background-size: contain !important;
         background-color: transparent !important;
-        padding: 100px 50px 70px 100px !important;
-        width: 150px !important;
-        height: 150px !important;
+        border: none !important;
+        box-shadow: none !important;
+        width: 130px !important;
+        height: 130px !important;
+        padding: 0 !important;
       }
       #n8n-chat .chat-window-toggle svg {
         display: none !important;
+      }
+      /* Efecto Hover opcional para que se mueva un poco al pasar el mouse */
+      #n8n-chat .chat-window-toggle:hover {
+        transform: scale(1.05);
+        transition: transform 0.2s ease;
       }
       `;
     }
