@@ -1,82 +1,90 @@
 # 🧮 Chatbot de Matemáticas
 
-Tutor virtual especializado en **Fracciones Matemáticas** para nivel primaria.
+Tutor virtual para el curso de **Fracciones Matemáticas**.
 
-## 📊 Configuración
+## 📊 Configuración Actual
 
-- **Curso ID**: 6
-- **Nombre**: Fracciones Matemáticas
-- **Color**: Azul Rey (`#0047AB`)
-- **Webhook**: `76fb1c45-b2f9-4f6c-bcc2-79a742581288`
+```javascript
+courseId: 6
+courseName: 'Fracciones Matemáticas'
+webhookUrl: '...76fb1c45...'
+avatarUrl: 'https://uxdigital.cl/.../bot-uxdigital.gif'
+colors: Azul Rey (#0047AB / #1E90FF)
+emoji: 🧮
+```
+
+## 🎨 Cambiar el Avatar/GIF
+
+Para cambiar el GIF del chatbot:
+
+1. Sube tu GIF a un servidor (ej: WordPress, Imgur, etc.)
+2. Asegúrate de que tenga **fondo transparente**
+3. Abre `chatbot.js` en GitHub
+4. Busca la línea 12:
+   ```javascript
+   avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
+   ```
+5. Reemplaza la URL con tu GIF
+6. **Commit changes**
+
+**Para usar el ícono por defecto** (sin GIF):
+```javascript
+avatarUrl: null,
+```
+
+## 🎨 Cambiar Colores
+
+Edita las líneas 14-17:
+```javascript
+colors: {
+  primary: '#0047AB',      // Color principal
+  secondary: '#1E90FF'     // Color para degradados
+},
+```
+
+**Ejemplos de colores:**
+- Verde: `#00AA00` / `#00DD00`
+- Rojo: `#CC0000` / `#FF0000`
+- Morado: `#6A0DAD` / `#9370DB`
 
 ## 🔗 Instalación en Moodle
 
-### Método 1: Bloque en el curso (Recomendado)
-
-1. Ve al curso de Matemáticas (ID 6)
-2. Activar edición
-3. Agregar bloque → "Texto..." o "HTML"
-4. Pega este código:
-
 ```html
-<script src="https://cdn.jsdelivr.net/gh/uxdigitalchile/Chatbots_Moodle_UXDigital@main/matematicas/chatbot.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/uxdigitalchile/Chatbots_Moodle_UXDigital@main/Matematicas/chatbot.js"></script>
 ```
 
-5. Guarda
+## 📝 Personalizar Mensajes
 
-### Método 2: Additional HTML (Global)
-
-1. Administración del sitio → Apariencia → Temas → Additional HTML
-2. En el campo `<body>`, pega el mismo script
-3. El chatbot solo aparecerá en el curso ID 6
-
-## 🎨 Personalización
-
-Para cambiar colores, edita las constantes en `chatbot.js`:
-
+Edita las líneas 20-26 en `chatbot.js`:
 ```javascript
-const COLORS = {
-  primary: '#0047AB',    // Azul Rey
-  secondary: '#1E90FF'   // Azul Dodger
-};
+messages: {
+  greeting: '¡Hola {nombre}! 👋 Tu mensaje aquí...',
+  greetingAnonymous: 'Mensaje sin nombre...',
+  subtitle: 'Subtítulo del chatbot',
+  placeholder: 'Texto del input...'
+}
 ```
 
-## 🔧 Workflow en n8n
+## ✅ Checklist de Personalización
 
-**URL del webhook**:
-```
-https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat
-```
-
-**System Prompt**: Ver archivo `system_prompt.txt` (próximamente)
-
-## ✅ Funcionalidades
-
-- ✅ Detección automática del nombre del estudiante
-- ✅ Saludo personalizado
-- ✅ Pedagogía socrática (no da respuestas directas)
-- ✅ Guía paso a paso en resolución de problemas
-- ✅ Uso de LaTeX para fórmulas matemáticas
-- ✅ Integración con RAG (contenido del curso SCORM)
-
-## 📝 Actualización
-
-Cualquier cambio en este archivo se reflejará automáticamente en Moodle (puede tardar hasta 24h por caché de CDN).
-
-Para forzar actualización inmediata, agrega versión:
-```html
-<script src="...chatbot.js?v=1.0.1"></script>
-```
+- [ ] Cambiar `avatarUrl` si quieres otro GIF
+- [ ] Ajustar `colors.primary` y `colors.secondary`
+- [ ] Personalizar mensajes de `greeting` y `subtitle`
+- [ ] Cambiar `emoji` si quieres otro ícono
+- [ ] Commit changes en GitHub
+- [ ] Esperar 5-30 min para que se actualice el CDN
+- [ ] Refrescar Moodle con Ctrl+Shift+R
 
 ## 🐛 Troubleshooting
 
-**El chatbot no aparece:**
-- Verifica que estás en el curso ID 6
-- Abre consola (F12) y busca: `✅ Curso detectado`
+**El avatar sigue con fondo de color:**
+- Verifica que tu GIF tenga fondo transparente
+- Prueba con: `https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif`
 
-**Error "Error in workflow":**
-- Verifica que el workflow en n8n esté activo
-- Revisa las Executions en n8n para ver el error
+**Los cambios no se ven:**
+- Limpia caché: Ctrl+Shift+R
+- Espera 30 minutos (caché de jsDelivr)
+- Agrega `?v=2` al final del script en Moodle
 
 ## 📞 Soporte
 

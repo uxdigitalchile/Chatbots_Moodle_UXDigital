@@ -1,14 +1,40 @@
 /**
- * Chatbot de Matemáticas - Curso ID 6
- * UXDigital Chile
- * Versión FINAL - Avatar transparente como producción
+ * ============================================
+ * CHATBOT DE MATEMÁTICAS - CONFIGURACIÓN
+ * ============================================
+ */
+
+const CONFIG = {
+  courseId: 6,
+  courseName: 'Fracciones Matemáticas',
+  webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat',
+  
+  // CAMBIAR AQUÍ EL GIF:
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
+  
+  colors: {
+    primary: '#0047AB',      // Azul Rey
+    secondary: '#1E90FF'     // Azul Dodger
+  },
+  
+  emoji: '🧮',
+  
+  messages: {
+    greeting: '¡Hola {nombre}! 👋 Soy tu tutor de matemáticas. ¿En qué puedo ayudarte hoy?',
+    greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
+    subtitle: 'Soy tu Tutor virtual de Matemáticas',
+    placeholder: '¿Cuál es tu consulta?'
+  }
+};
+
+/**
+ * ============================================
+ * CÓDIGO DEL CHATBOT (NO MODIFICAR)
+ * ============================================
  */
 
 (function() {
   'use strict';
-  
-  const COURSE_ID = 6;
-  const WEBHOOK_URL = 'https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat';
   
   function isInCourse(courseId) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -35,7 +61,7 @@
     };
   }
   
-  if (!isInCourse(COURSE_ID)) return;
+  if (!isInCourse(CONFIG.courseId)) return;
   
   setTimeout(() => {
     const userInfo = getUserInfo();
@@ -50,29 +76,48 @@
       document.head.appendChild(link);
     }
     
-    // Solo estilos para header y mensajes, NO para el botón
     const style = document.createElement('style');
-    style.textContent = `
+    let cssRules = `
       #n8n-chat .chat-header {
-        background: linear-gradient(135deg, #0047AB 0%, #1E90FF 100%) !important;
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
       }
       #n8n-chat .chat-message-user {
-        background: linear-gradient(135deg, #0047AB 0%, #1E90FF 100%) !important;
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
         color: #ffffff !important;
       }
       #n8n-chat .chat-input:focus {
-        border-color: #0047AB !important;
+        border-color: ${CONFIG.colors.primary} !important;
       }
       #n8n-chat .chat-input-send-button {
-        background: linear-gradient(135deg, #0047AB 0%, #1E90FF 100%) !important;
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
       }
     `;
+    
+    if (CONFIG.avatarUrl) {
+      cssRules += `
+      #n8n-chat .chat-window-toggle {
+        background-image: url('${CONFIG.avatarUrl}') !important;
+        background-size: cover !important;
+        background-position: center !important;
+      }
+      `;
+    }
+    
+    style.textContent = cssRules;
     document.head.appendChild(style);
     
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
       .then(({ createChat }) => {
+        const greeting = userInfo.firstName !== 'Estudiante' 
+          ? CONFIG.messages.greeting.replace('{nombre}', userInfo.firstName)
+          : CONFIG.messages.greetingAnonymous;
+        
+        const title = userInfo.firstName !== 'Estudiante'
+          ? `¡Hola ${userInfo.firstName}! ${CONFIG.emoji}`
+          : `¡Hola! ${CONFIG.emoji}`;
+        
         createChat({
-          webhookUrl: WEBHOOK_URL,
+          webhookUrl: CONFIG.webhookUrl,
           target: '#n8n-chat',
           mode: 'window',
           chatInputKey: 'chatInput',
@@ -81,24 +126,20 @@
           metadata: {},
           showWelcomeScreen: false,
           defaultLanguage: 'es',
-          initialMessages: [
-            userInfo.firstName !== 'Estudiante' 
-              ? `¡Hola ${userInfo.firstName}! 👋 Soy tu tutor de matemáticas. ¿En qué puedo ayudarte hoy?`
-              : '¿Cómo puedo ayudarte hoy?'
-          ],
+          initialMessages: [greeting],
           i18n: {
             es: {
-              title: userInfo.firstName !== 'Estudiante' 
-                ? `¡Hola ${userInfo.firstName}! 🧮`
-                : '¡Hola! 🧮',
-              subtitle: 'Soy tu Tutor virtual de Matemáticas',
+              title: title,
+              subtitle: CONFIG.messages.subtitle,
               footer: '',
               getStarted: 'Nueva conversación',
-              inputPlaceholder: '¿Cuál es tu consulta?',
+              inputPlaceholder: CONFIG.messages.placeholder,
             },
           },
           enableStreaming: false,
         });
+        
+        console.log(`✅ Chatbot cargado: ${CONFIG.courseName}`);
       });
   }, 800);
 })();
