@@ -1,41 +1,27 @@
 /**
  * Chatbot de Matemáticas - Curso ID 6
  * UXDigital Chile
- * Última actualización: 2025-01-13 v1.3
+ * Versión FINAL - Avatar transparente como producción
  */
 
 (function() {
   'use strict';
   
   const COURSE_ID = 6;
-  const COURSE_NAME = 'Fracciones Matemáticas';
   const WEBHOOK_URL = 'https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat';
-  const COLORS = {
-    primary: '#0047AB',
-    secondary: '#1E90FF'
-  };
   
   function isInCourse(courseId) {
     const urlParams = new URLSearchParams(window.location.search);
     const currentCourseId = parseInt(urlParams.get('id')) || 0;
-    
-    const moodleCourseId = (typeof M !== 'undefined' && M.cfg && M.cfg.courseId) 
-      ? parseInt(M.cfg.courseId) 
-      : 0;
-    
+    const moodleCourseId = (typeof M !== 'undefined' && M.cfg && M.cfg.courseId) ? parseInt(M.cfg.courseId) : 0;
     const bodyClasses = document.body.className;
     const courseMatch = bodyClasses.match(/course-(\d+)/);
     const bodyCourseId = courseMatch ? parseInt(courseMatch[1]) : 0;
-    
-    return currentCourseId === courseId || 
-           moodleCourseId === courseId || 
-           bodyCourseId === courseId;
+    return currentCourseId === courseId || moodleCourseId === courseId || bodyCourseId === courseId;
   }
   
   function getUserInfo() {
     let userName = '';
-    let userId = '';
-    
     const userMenuToggle = document.querySelector('#user-menu-toggle');
     if (userMenuToggle) {
       const clone = userMenuToggle.cloneNode(true);
@@ -43,26 +29,18 @@
       let rawName = clone.textContent.trim().replace(/\s+/g, ' ');
       userName = rawName.split(' - ')[0].trim();
     }
-    
-    if (typeof M !== 'undefined' && M.cfg && M.cfg.userId) {
-      userId = M.cfg.userId.toString();
-    } else {
-      const userElement = document.querySelector('[data-userid]');
-      if (userElement) userId = userElement.getAttribute('data-userid');
-    }
-    
     return {
       name: userName || 'Estudiante',
-      firstName: userName ? userName.split(' ')[0] : 'Estudiante',
-      userId: userId
+      firstName: userName ? userName.split(' ')[0] : 'Estudiante'
     };
   }
   
-  function loadChatbot() {
+  if (!isInCourse(COURSE_ID)) return;
+  
+  setTimeout(() => {
     const userInfo = getUserInfo();
-    
     const container = document.createElement('div');
-    container.id = 'n8n-chat-matematicas';
+    container.id = 'n8n-chat';
     document.body.appendChild(container);
     
     if (!document.querySelector('link[href*="n8n/chat"]')) {
@@ -72,64 +50,21 @@
       document.head.appendChild(link);
     }
     
+    // Solo estilos para header y mensajes, NO para el botón
     const style = document.createElement('style');
     style.textContent = `
-      /* Botón flotante: solo emoji, sin fondo */
-      #n8n-chat-matematicas .chat-window-toggle {
-        background: transparent !important;
-        background-color: transparent !important;
-        background-image: none !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-        width: 70px !important;
-        height: 70px !important;
-        border-radius: 50% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        font-size: 40px !important;
-        padding: 0 !important;
+      #n8n-chat .chat-header {
+        background: linear-gradient(135deg, #0047AB 0%, #1E90FF 100%) !important;
       }
-      
-      #n8n-chat-matematicas .chat-window-toggle::before {
-        content: "🧮" !important;
-        display: block !important;
-        line-height: 1 !important;
-      }
-      
-      #n8n-chat-matematicas .chat-window-toggle svg,
-      #n8n-chat-matematicas .chat-window-toggle img {
-        display: none !important;
-      }
-      
-      #n8n-chat-matematicas .chat-window-toggle:hover {
-        transform: scale(1.1) !important;
-        transition: transform 0.2s ease !important;
-      }
-      
-      #n8n-chat-matematicas .chat-input {
-        border: 2px solid #e0e0e0 !important;
-        border-radius: 24px !important;
-        padding: 14px 20px !important;
-      }
-      
-      #n8n-chat-matematicas .chat-input:focus {
-        border-color: ${COLORS.primary} !important;
-        box-shadow: 0 4px 16px rgba(0, 71, 171, 0.3) !important;
-      }
-      
-      #n8n-chat-matematicas .chat-input-send-button {
-        background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
-        border-radius: 50% !important;
-      }
-      
-      #n8n-chat-matematicas .chat-header {
-        background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
-      }
-      
-      #n8n-chat-matematicas .chat-message-user {
-        background: linear-gradient(135deg, ${COLORS.primary} 0%, ${COLORS.secondary} 100%) !important;
+      #n8n-chat .chat-message-user {
+        background: linear-gradient(135deg, #0047AB 0%, #1E90FF 100%) !important;
         color: #ffffff !important;
+      }
+      #n8n-chat .chat-input:focus {
+        border-color: #0047AB !important;
+      }
+      #n8n-chat .chat-input-send-button {
+        background: linear-gradient(135deg, #0047AB 0%, #1E90FF 100%) !important;
       }
     `;
     document.head.appendChild(style);
@@ -138,14 +73,18 @@
       .then(({ createChat }) => {
         createChat({
           webhookUrl: WEBHOOK_URL,
-          target: '#n8n-chat-matematicas',
+          target: '#n8n-chat',
           mode: 'window',
+          chatInputKey: 'chatInput',
+          chatSessionKey: 'sessionId',
+          loadPreviousSession: true,
+          metadata: {},
           showWelcomeScreen: false,
           defaultLanguage: 'es',
           initialMessages: [
             userInfo.firstName !== 'Estudiante' 
               ? `¡Hola ${userInfo.firstName}! 👋 Soy tu tutor de matemáticas. ¿En qué puedo ayudarte hoy?`
-              : '¡Hola! 👋 Soy tu tutor de matemáticas. ¿En qué puedo ayudarte hoy?'
+              : '¿Cómo puedo ayudarte hoy?'
           ],
           i18n: {
             es: {
@@ -153,20 +92,13 @@
                 ? `¡Hola ${userInfo.firstName}! 🧮`
                 : '¡Hola! 🧮',
               subtitle: 'Soy tu Tutor virtual de Matemáticas',
+              footer: '',
+              getStarted: 'Nueva conversación',
               inputPlaceholder: '¿Cuál es tu consulta?',
             },
           },
+          enableStreaming: false,
         });
-        console.log('✅ Chatbot Matemáticas cargado');
       });
-  }
-  
-  if (isInCourse(COURSE_ID)) {
-    console.log(`✅ Curso detectado: ${COURSE_NAME} (ID ${COURSE_ID})`);
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => setTimeout(loadChatbot, 800));
-    } else {
-      setTimeout(loadChatbot, 800);
-    }
-  }
+  }, 800);
 })();
