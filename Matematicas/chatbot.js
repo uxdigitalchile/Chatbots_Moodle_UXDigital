@@ -1,6 +1,6 @@
 /**
  * ============================================
- * CHATBOT DE MATEMÁTICAS - VERSIÓN "NUCLEAR" (TRANSPARENCIA FORZADA)
+ * CHATBOT MATEMÁTICAS - SIN GLOBO V3
  * ============================================
  */
 
@@ -8,14 +8,17 @@ const CONFIG = {
   courseId: 6,
   courseName: 'Fracciones Matemáticas',
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat',
-  avatarUrl:, 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
+  
   colors: {
-    primary: '#0047AB',
-    secondary: '#1E90FF'
+    primary: '#0047AB',      // Azul Rey
+    secondary: '#1E90FF'     // Azul Dodger
   },
+  
   emoji: '🧮',
+  
   messages: {
-    greeting: '¡Hola {nombre}! 👋 Soy tu tutor de matemáticas 1. ¿En qué puedo ayudarte hoy?',
+    greeting: '¡Hola {nombre}! 👋 Soy tu tutor de matemáticas. ¿En qué puedo ayudarte hoy?',
     greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
     subtitle: 'Soy tu Tutor virtual de Matemáticas',
     placeholder: '¿Cuál es tu consulta?'
@@ -49,30 +52,6 @@ const CONFIG = {
       firstName: userName ? userName.split(' ')[0] : 'Estudiante'
     };
   }
-
-  // FUNCIÓN PARA FORZAR ESTILOS MANUALMENTE
-  function forceTransparency() {
-    const toggles = document.querySelectorAll('.chat-window-toggle');
-    toggles.forEach(btn => {
-      // Forzar estilos en línea (tienen prioridad sobre CSS)
-      btn.style.setProperty('background', 'transparent', 'important');
-      btn.style.setProperty('background-color', 'transparent', 'important');
-      btn.style.setProperty('box-shadow', 'none', 'important');
-      btn.style.setProperty('border', 'none', 'important');
-      btn.style.setProperty('width', '150px', 'important'); // Más grande para que quepa el GIF
-      btn.style.setProperty('height', '150px', 'important');
-      
-      // Asegurar que la imagen se vea completa
-      btn.style.setProperty('background-image', `url('${CONFIG.avatarUrl}')`, 'important');
-      btn.style.setProperty('background-size', 'contain', 'important');
-      btn.style.setProperty('background-repeat', 'no-repeat', 'important');
-      btn.style.setProperty('background-position', 'center bottom', 'important');
-
-      // Ocultar el SVG (el icono de chat por defecto)
-      const svg = btn.querySelector('svg');
-      if(svg) svg.style.display = 'none';
-    });
-  }
   
   if (!isInCourse(CONFIG.courseId)) return;
   
@@ -82,26 +61,50 @@ const CONFIG = {
     container.id = 'n8n-chat';
     document.body.appendChild(container);
     
-    // CSS DE ALTA PRIORIDAD
+    if (!document.querySelector('link[href*="n8n/chat"]')) {
+      const link = document.createElement('link');
+      link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    }
+    
     const style = document.createElement('style');
     style.innerHTML = `
-      /* Colores del chat interno */
-      #n8n-chat .chat-header { background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important; }
-      #n8n-chat .chat-message-user { background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important; color: #fff !important; }
-      #n8n-chat .chat-input-send-button { background: ${CONFIG.colors.primary} !important; }
-
-      /* MATAR EL FONDO FUCSIA */
-      body #n8n-chat .chat-window-toggle {
-        background: transparent !important;
-        background-color: transparent !important;
+      #n8n-chat .chat-header {
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
+      }
+      #n8n-chat .chat-message-user {
+        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
+        color: #ffffff !important;
+      }
+      #n8n-chat .chat-input-send-button {
+        background: ${CONFIG.colors.primary} !important;
+      }
+      
+      /* AVATAR TRANSPARENTE */
+      #n8n-chat .chat-window-toggle {
+        background: transparent url('${CONFIG.avatarUrl}') no-repeat center bottom !important;
+        background-size: 130% !important;
         box-shadow: none !important;
         border: none !important;
-        width: 150px !important;
-        height: 150px !important;
-        border-radius: 0 !important; /* Importante: quita el recorte circular */
+        width: 140px !important;
+        height: 140px !important;
       }
-      body #n8n-chat .chat-window-toggle svg { display: none !important; }
-      body #n8n-chat .chat-window-toggle:hover { transform: scale(1.05); }
+      
+      /* --- ANTI-GLOBO: ESTO ES LO NUEVO --- */
+      /* Ocultamos el SVG (el globo blanco) con 4 candados diferentes para asegurar que desaparezca */
+      #n8n-chat .chat-window-toggle svg {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+      
+      #n8n-chat .chat-window-toggle:hover {
+        transform: scale(1.05);
+        transition: transform 0.3s ease;
+      }
     `;
     document.head.appendChild(style);
     
@@ -130,15 +133,6 @@ const CONFIG = {
             },
           },
         });
-
-        // VIGILANTE CONSTANTE: Ejecuta la limpieza de estilos cada 500ms durante 5 segundos
-        // Esto corrige el problema si el chat tarda en cargar
-        let attempts = 0;
-        const interval = setInterval(() => {
-          forceTransparency();
-          attempts++;
-          if (attempts > 20) clearInterval(interval); // Parar después de 10 segundos
-        }, 500);
       });
   }, 1000);
 })();
