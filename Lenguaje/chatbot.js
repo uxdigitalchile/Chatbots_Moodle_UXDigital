@@ -1,6 +1,6 @@
 /**
  * ============================================
- * CHATBOT DE LENGUAJE - VERSIÓN TRANSPARENTE V2
+ * CHATBOT LENGUAJE - SIN GLOBO V3
  * ============================================
  */
 
@@ -8,12 +8,15 @@ const CONFIG = {
   courseId: 4,
   courseName: 'Lenguaje y Comunicación',
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat',
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif', // ✅ GIF Transparente
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
+  
   colors: {
-    primary: '#FF8C00',
-    secondary: '#FFA500'
+    primary: '#FF8C00',      // Naranja oscuro
+    secondary: '#FFA500'     // Naranja
   },
+  
   emoji: '📖',
+  
   messages: {
     greeting: '¡Hola {nombre}! 📚 Soy tu tutor de Lenguaje. ¿Listo para aprender?',
     greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
@@ -72,35 +75,34 @@ const CONFIG = {
       }
       #n8n-chat .chat-message-user {
         background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
-        color: #fff !important;
-      }
-      #n8n-chat .chat-message-bot {
-        background: #fff8f0 !important;
+        color: #ffffff !important;
       }
       #n8n-chat .chat-input-send-button {
         background: ${CONFIG.colors.primary} !important;
       }
-
-      /* --- SOLUCIÓN FONDO FUCSIA --- */
-      :root {
-        --chat--toggle--background: transparent !important;
-        --chat--toggle--hover--background: transparent !important;
+      #n8n-chat .chat-message-bot {
+        background: #fff8f0 !important;
       }
+      
+      /* AVATAR TRANSPARENTE */
       #n8n-chat .chat-window-toggle {
-        background-color: transparent !important;
-        background-image: url('${CONFIG.avatarUrl}') !important;
-        background-repeat: no-repeat !important;
-        background-position: center bottom !important;
-        background-size: 140% !important;
+        background: transparent url('${CONFIG.avatarUrl}') no-repeat center bottom !important;
+        background-size: 130% !important;
         box-shadow: none !important;
         border: none !important;
         width: 140px !important;
         height: 140px !important;
       }
+      
+      /* --- ANTI-GLOBO: ELIMINACIÓN DEL ICONO --- */
       #n8n-chat .chat-window-toggle svg {
         display: none !important;
         opacity: 0 !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
       }
+      
       #n8n-chat .chat-window-toggle:hover {
         transform: scale(1.05);
         transition: transform 0.3s ease;
