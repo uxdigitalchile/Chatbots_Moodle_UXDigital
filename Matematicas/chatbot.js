@@ -1,6 +1,6 @@
 /**
  * ============================================
- * CHATBOT DE MATEMÁTICAS - VERSIÓN TRANSPARENTE V2
+ * CHATBOT DE MATEMÁTICAS - VERSIÓN "NUCLEAR" (TRANSPARENCIA FORZADA)
  * ============================================
  */
 
@@ -8,7 +8,7 @@ const CONFIG = {
   courseId: 6,
   courseName: 'Fracciones Matemáticas',
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/76fb1c45-b2f9-4f6c-bcc2-79a742581288/chat',
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif', // ✅ GIF Transparente
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif',
   colors: {
     primary: '#0047AB',
     secondary: '#1E90FF'
@@ -49,6 +49,30 @@ const CONFIG = {
       firstName: userName ? userName.split(' ')[0] : 'Estudiante'
     };
   }
+
+  // FUNCIÓN PARA FORZAR ESTILOS MANUALMENTE
+  function forceTransparency() {
+    const toggles = document.querySelectorAll('.chat-window-toggle');
+    toggles.forEach(btn => {
+      // Forzar estilos en línea (tienen prioridad sobre CSS)
+      btn.style.setProperty('background', 'transparent', 'important');
+      btn.style.setProperty('background-color', 'transparent', 'important');
+      btn.style.setProperty('box-shadow', 'none', 'important');
+      btn.style.setProperty('border', 'none', 'important');
+      btn.style.setProperty('width', '150px', 'important'); // Más grande para que quepa el GIF
+      btn.style.setProperty('height', '150px', 'important');
+      
+      // Asegurar que la imagen se vea completa
+      btn.style.setProperty('background-image', `url('${CONFIG.avatarUrl}')`, 'important');
+      btn.style.setProperty('background-size', 'contain', 'important');
+      btn.style.setProperty('background-repeat', 'no-repeat', 'important');
+      btn.style.setProperty('background-position', 'center bottom', 'important');
+
+      // Ocultar el SVG (el icono de chat por defecto)
+      const svg = btn.querySelector('svg');
+      if(svg) svg.style.display = 'none';
+    });
+  }
   
   if (!isInCourse(CONFIG.courseId)) return;
   
@@ -58,61 +82,26 @@ const CONFIG = {
     container.id = 'n8n-chat';
     document.body.appendChild(container);
     
-    // Cargar estilos base
-    if (!document.querySelector('link[href*="n8n/chat"]')) {
-      const link = document.createElement('link');
-      link.href = 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css';
-      link.rel = 'stylesheet';
-      document.head.appendChild(link);
-    }
-    
-    // Inyectar CSS personalizado con ALTA PRIORIDAD
+    // CSS DE ALTA PRIORIDAD
     const style = document.createElement('style');
     style.innerHTML = `
-      /* Header y Mensajes */
-      #n8n-chat .chat-header {
-        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
-      }
-      #n8n-chat .chat-message-user {
-        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
-        color: #fff !important;
-      }
-      #n8n-chat .chat-input-send-button {
-        background: ${CONFIG.colors.primary} !important;
-      }
-      
-      /* --- SOLUCIÓN FONDO FUCSIA --- */
-      /* 1. Forzamos variables CSS a transparente */
-      :root {
-        --chat--toggle--background: transparent !important;
-        --chat--toggle--hover--background: transparent !important;
-      }
+      /* Colores del chat interno */
+      #n8n-chat .chat-header { background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important; }
+      #n8n-chat .chat-message-user { background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important; color: #fff !important; }
+      #n8n-chat .chat-input-send-button { background: ${CONFIG.colors.primary} !important; }
 
-      /* 2. Atacamos el botón específicamente */
-      #n8n-chat .chat-window-toggle {
+      /* MATAR EL FONDO FUCSIA */
+      body #n8n-chat .chat-window-toggle {
+        background: transparent !important;
         background-color: transparent !important;
-        background-image: url('${CONFIG.avatarUrl}') !important;
-        background-repeat: no-repeat !important;
-        background-position: center bottom !important; 
-        background-size: 140% !important; /* Hacemos el GIF un poco más grande */
-        
-        box-shadow: none !important; /* Elimina el brillo rosa */
+        box-shadow: none !important;
         border: none !important;
-        width: 140px !important;
-        height: 140px !important;
+        width: 150px !important;
+        height: 150px !important;
+        border-radius: 0 !important; /* Importante: quita el recorte circular */
       }
-
-      /* 3. Ocultamos el icono SVG original */
-      #n8n-chat .chat-window-toggle svg {
-        display: none !important;
-        opacity: 0 !important;
-      }
-
-      /* Animación suave al pasar el mouse */
-      #n8n-chat .chat-window-toggle:hover {
-        transform: scale(1.05);
-        transition: transform 0.3s ease;
-      }
+      body #n8n-chat .chat-window-toggle svg { display: none !important; }
+      body #n8n-chat .chat-window-toggle:hover { transform: scale(1.05); }
     `;
     document.head.appendChild(style);
     
@@ -141,6 +130,15 @@ const CONFIG = {
             },
           },
         });
+
+        // VIGILANTE CONSTANTE: Ejecuta la limpieza de estilos cada 500ms durante 5 segundos
+        // Esto corrige el problema si el chat tarda en cargar
+        let attempts = 0;
+        const interval = setInterval(() => {
+          forceTransparency();
+          attempts++;
+          if (attempts > 20) clearInterval(interval); // Parar después de 10 segundos
+        }, 500);
       });
-  }, 1000); // Aumenté el tiempo de espera levemente para asegurar carga
+  }, 1000);
 })();
