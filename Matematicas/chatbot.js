@@ -15,7 +15,7 @@ const CONFIG = {
   },
   emoji: '🧮',
   messages: {
-    greeting: '¡Hola {nombre}! 👋 Soy tu tutor de matemáticas. ¿En qué puedo ayudarte hoy?',
+    greeting: '¡Hola {nombre}! 👋 Soy tu tutor de matemáticas 1. ¿En qué puedo ayudarte hoy?',
     greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
     subtitle: 'Soy tu Tutor virtual de Matemáticas',
     placeholder: '¿Cuál es tu consulta?'
