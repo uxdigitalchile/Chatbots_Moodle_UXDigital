@@ -1,6 +1,6 @@
 /**
  * ============================================
- * CHATBOT DE LENGUAJE - CONFIGURACIÓN CORREGIDA
+ * CHATBOT DE LENGUAJE - VERSIÓN TRANSPARENTE V2
  * ============================================
  */
 
@@ -8,30 +8,19 @@ const CONFIG = {
   courseId: 4,
   courseName: 'Lenguaje y Comunicación',
   webhookUrl: 'https://n8n.srv1000857.hstgr.cloud/webhook/5979f63d-4dac-46cd-9aa8-e74d7a927b27/chat',
-  
-  // ✅ ACTUALIZADO: URL del nuevo GIF transparente
-  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/bot-uxdigital.gif',
-  
+  avatarUrl: 'https://uxdigital.cl/wp-content/uploads/2025/01/tutor-biologia-pro.gif', // ✅ GIF Transparente
   colors: {
-    primary: '#FF8C00',      // Naranja oscuro
-    secondary: '#FFA500'     // Naranja
+    primary: '#FF8C00',
+    secondary: '#FFA500'
   },
-  
   emoji: '📖',
-  
   messages: {
-    greeting: '¡Hola {nombre}! 📚 Soy tu tutor de Lenguaje. ¿Estás listo para leer algo interesante hoy o prefieres que repasemos ortografía?',
+    greeting: '¡Hola {nombre}! 📚 Soy tu tutor de Lenguaje. ¿Listo para aprender?',
     greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
     subtitle: 'Soy tu Tutor de Lenguaje y Comunicación',
     placeholder: '¿En qué puedo ayudarte?'
   }
 };
-
-/**
- * ============================================
- * CÓDIGO DEL CHATBOT
- * ============================================
- */
 
 (function() {
   'use strict';
@@ -77,56 +66,46 @@ const CONFIG = {
     }
     
     const style = document.createElement('style');
-    let cssRules = `
+    style.innerHTML = `
       #n8n-chat .chat-header {
         background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
-        padding: 20px !important;
-        border-radius: 20px 20px 0 0 !important;
       }
       #n8n-chat .chat-message-user {
         background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
-        color: #ffffff !important;
-        border-radius: 18px 18px 4px 18px !important;
-        padding: 12px 16px !important;
+        color: #fff !important;
       }
       #n8n-chat .chat-message-bot {
         background: #fff8f0 !important;
-        border-radius: 18px 18px 18px 4px !important;
-        padding: 12px 16px !important;
-      }
-      #n8n-chat .chat-input:focus {
-        border-color: ${CONFIG.colors.primary} !important;
-        box-shadow: 0 4px 16px rgba(255, 140, 0, 0.3) !important;
       }
       #n8n-chat .chat-input-send-button {
-        background: linear-gradient(135deg, ${CONFIG.colors.primary} 0%, ${CONFIG.colors.secondary} 100%) !important;
+        background: ${CONFIG.colors.primary} !important;
       }
-    `;
-    
-    // ✅ CORRECCIÓN DE CSS PARA FONDO TRANSPARENTE
-    if (CONFIG.avatarUrl) {
-      cssRules += `
+
+      /* --- SOLUCIÓN FONDO FUCSIA --- */
+      :root {
+        --chat--toggle--background: transparent !important;
+        --chat--toggle--hover--background: transparent !important;
+      }
       #n8n-chat .chat-window-toggle {
-        background: url('${CONFIG.avatarUrl}') no-repeat center center !important;
-        background-size: contain !important;
         background-color: transparent !important;
-        border: none !important;
+        background-image: url('${CONFIG.avatarUrl}') !important;
+        background-repeat: no-repeat !important;
+        background-position: center bottom !important;
+        background-size: 140% !important;
         box-shadow: none !important;
-        width: 130px !important;
-        height: 130px !important;
-        padding: 0 !important;
+        border: none !important;
+        width: 140px !important;
+        height: 140px !important;
       }
       #n8n-chat .chat-window-toggle svg {
         display: none !important;
+        opacity: 0 !important;
       }
       #n8n-chat .chat-window-toggle:hover {
         transform: scale(1.05);
-        transition: transform 0.2s ease;
+        transition: transform 0.3s ease;
       }
-      `;
-    }
-    
-    style.textContent = cssRules;
+    `;
     document.head.appendChild(style);
     
     import('https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js')
@@ -134,11 +113,7 @@ const CONFIG = {
         const greeting = userInfo.firstName !== 'Estudiante' 
           ? CONFIG.messages.greeting.replace('{nombre}', userInfo.firstName)
           : CONFIG.messages.greetingAnonymous;
-        
-        const title = userInfo.firstName !== 'Estudiante'
-          ? `¡Hola ${userInfo.firstName}! ${CONFIG.emoji}`
-          : `¡Hola! ${CONFIG.emoji}`;
-        
+          
         createChat({
           webhookUrl: CONFIG.webhookUrl,
           target: '#n8n-chat',
@@ -146,23 +121,18 @@ const CONFIG = {
           chatInputKey: 'chatInput',
           chatSessionKey: 'sessionId',
           loadPreviousSession: true,
-          metadata: {},
           showWelcomeScreen: false,
           defaultLanguage: 'es',
           initialMessages: [greeting],
           i18n: {
             es: {
-              title: title,
+              title: `¡Hola ${userInfo.firstName}! ${CONFIG.emoji}`,
               subtitle: CONFIG.messages.subtitle,
-              footer: '',
-              getStarted: 'Nueva conversación',
+              getStarted: 'Empezar',
               inputPlaceholder: CONFIG.messages.placeholder,
             },
           },
-          enableStreaming: false,
         });
-        
-        console.log(`✅ Chatbot cargado: ${CONFIG.courseName}`);
       });
-  }, 800);
+  }, 1000);
 })();
