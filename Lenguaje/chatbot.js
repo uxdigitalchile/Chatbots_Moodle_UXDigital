@@ -18,7 +18,7 @@ const CONFIG = {
   emoji: '📖',
   
   messages: {
-    greeting: '¡Hola {nombre}! 📚 Soy tu tutor de Lenguaje. ¿Listo para aprender?',
+    greeting: '¡Hola {nombre}! 📚 Soy tu tutor de Lenguaje 1. ¿Listo para aprender?',
     greetingAnonymous: '¿Cómo puedo ayudarte hoy?',
     subtitle: 'Soy tu Tutor de Lenguaje y Comunicación',
     placeholder: '¿En qué puedo ayudarte?'
